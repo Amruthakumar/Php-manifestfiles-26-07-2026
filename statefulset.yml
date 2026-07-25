@@ -44,4 +44,4 @@ spec:
       resources:           # ✅ corrected from resource
         requests: 
           storage: 2Gi
-      storageClassName: gp2
+      
