@@ -33,7 +33,7 @@ spec:
 
         volumeMounts:
         - name: mysql-pvc   # ✅ must match claim name
-          mountPath: /var/lib/mysql
+          mountPath: /usr/share/nginx/html/
 
   volumeClaimTemplates:
   - metadata: 
