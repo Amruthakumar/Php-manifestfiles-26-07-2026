@@ -1,4 +1,3 @@
----
 apiVersion: apps/v1
 kind: StatefulSet
 metadata: 
@@ -15,34 +14,33 @@ spec:
         app: app-database
     spec:
       containers:
-        - name: dbcontainer
-          image: amruthkumar123/k8sfirst:dbimage
-          ports: 
-            - containerPort: 3306
-          
-          envFrom:
-          - secretMapRef: 
-             name: bankapp-db-secret
+      - name: dbcontainer
+        image: amruthkumar123/k8sfirst:dbimage
+        ports: 
+        - containerPort: 3306
 
-          resources:
-            requests: 
-              cpu: "100m"
-              memory: "128Mi"
-            limits: 
-              cpu: "200"
-              memory: "256Mi"
+        envFrom:
+        - secretRef:        # ✅ corrected from secretMapRef
+            name: bankapp-db-secret
 
-          volumeMounts:
-            - name: pvc-1 
-              mountPath: /var/lib/mysql
+        resources:
+          requests: 
+            cpu: "100m"
+            memory: "128Mi"
+          limits: 
+            cpu: "200m"     # ✅ added "m" unit
+            memory: "256Mi"
 
+        volumeMounts:
+        - name: mysql-pvc   # ✅ must match claim name
+          mountPath: /var/lib/mysql
 
-      volumeClaimTemplates:
-       - metadata: 
-            name: pvc-1
-         spec: 
-           accessModes:
-            - ReadWriteOnce
-           resource:
-            requests: 
-              storage: 2Gi 
+  volumeClaimTemplates:
+  - metadata: 
+      name: mysql-pvc      # ✅ matches volumeMounts name
+    spec: 
+      accessModes:
+      - ReadWriteOnce
+      resources:           # ✅ corrected from resource
+        requests: 
+          storage: 2Gi
